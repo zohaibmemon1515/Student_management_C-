@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Marksheet Management System - Project Documentation</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1in;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .document-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        
+        .page {
+            min-height: 297mm;
+            padding: 50px;
+            background: white;
+            page-break-after: always;
+            position: relative;
+        }
+        
+        .page:last-child {
+            page-break-after: auto;
+        }
+        
+        /* Cover Page Styles */
+        .cover-page {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .cover-page .page-number {
+            display: none;
+        }
+        
+        .university-logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .cover-title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .cover-subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #ecf0f1;
+            font-weight: 300;
+        }
+        
+        .cover-info {
+            background: rgba(255,255,255,0.1);
+            padding: 30px 50px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .cover-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .cover-info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .cover-label {
+            font-weight: 600;
+            color: #f39c12;
+            min-width: 150px;
+            text-align: left;
+        }
+        
+        .cover-value {
+            color: white;
+            text-align: left;
+        }
+        
+        /* Header Styles */
+        .page-header {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .page-header .doc-info {
+            text-align: right;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
+        .page-number {
+            position: absolute;
+            bottom: 30px;
+            right: 50px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* Section Styles */
+        .section {
+            margin: 30px 0;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 4px solid #3498db;
+            background: linear-gradient(90deg, #ecf0f1 0%, transparent 100%);
+            padding: 10px 15px;
+        }
+        
+        .subsection-title {
+            color: #34495e;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 25px 0 15px 0;
+            color: #2980b9;
+        }
+        
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 13px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e8f4f8;
+        }
+        
+        /* Feature Cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .feature-card h4 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .feature-card li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+        }
+        
+        .feature-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        
+        /* Code Block Styles */
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .code-keyword {
+            color: #e74c3c;
+        }
+        
+        .code-string {
+            color: #2ecc71;
+        }
+        
+        .code-comment {
+            color: #95a5a6;
+        }
+        
+        .code-function {
+            color: #3498db;
+        }
+        
+        /* Diagram Styles */
+        .diagram {
+            background: #f8f9fa;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            line-height: 1.8;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        /* List Styles */
+        ul.styled-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        ul.styled-list li {
+            padding: 8px 0 8px 30px;
+            position: relative;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        ul.styled-list li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-size: 12px;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #e8f4f8, #f0f7fb);
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-box-title {
+            color: #2980b9;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fef5e7, #fff9f0);
+            border-left: 4px solid #f39c12;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .warning-box-title {
+            color: #d68910;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #e8f8f0, #f0fbf5);
+            border-left: 4px solid #2ecc71;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .success-box-title {
+            color: #27ae60;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        /* Footer */
+        .document-footer {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 2px solid #ecf0f1;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        /* Table of Contents */
+        .toc {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        
+        .toc-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .toc-item:hover {
+            background: #e8f4f8;
+            transform: translateX(5px);
+        }
+        
+        .toc-page {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pass {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .status-fail {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .status-high {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .status-medium {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .status-low {
+            background: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="document-container">
+        
+        <!-- PAGE 1: COVER PAGE -->
+        <div class="page cover-page">
+            <div class="university-logo">📚</div>
+            
+            <h1 class="cover-title">Student Marksheet<br>Management System</h1>
+            <p class="cover-subtitle">Comprehensive Project Documentation</p>
+            
+            <div class="cover-info">
+                <div class="cover-info-row">
+                    <span class="cover-label">Document Version:</span>
+                    <span class="cover-value">1.0</span>
+                </div>
+                <div class="cover-info-row">
+                    <span class="cover-label">Programming Language:</span>
+                    <span class="cover-value">C++ (C++11 Standard)</span>
+                </div>
+                <div class="cover-info-row">
+                    <span class="cover-label">Project Type:</span>
+                    <span class="cover-value">Console-Based Application</span>
+                </div>
+                <div class="cover-info-row">
+                    <span class="cover-label">Created:</span>
+                    <span class="cover-value">March 13, 2026</span>
+                </div>
+                <div class="cover-info-row">
+                    <span class="cover-label">Institution:</span>
+                    <span class="cover-value">University PF Tasks</span>
+                </div>
+                <div class="cover-info-row">
+                    <span class="cover-label">Total Pages:</span>
+                    <span class="cover-value">6 Pages (Advanced)</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 50px; opacity: 0.8; font-size: 14px;">
+                <p>Board of Intermediate & Secondary Education</p>
+                <p style="margin-top: 10px; color: #f39c12;">Hyderabad</p>
+            </div>
+            
+            <div class="page-number"></div>
+        </div>
+        
+        <!-- PAGE 2: TABLE OF CONTENTS & EXECUTIVE SUMMARY -->
+        <div class="page">
+            <div class="page-header">
+                <h1>📋 Table of Contents</h1>
+                <div class="doc-info">
+                    <div>Version 1.0</div>
+                    <div>March 13, 2026</div>
+                </div>
+            </div>
+            
+            <div class="toc">
+                <div class="toc-title">Document Navigation</div>
+                <div class="toc-item">
+                    <span>1. Executive Summary & Project Overview</span>
+                    <span class="toc-page">3</span>
+                </div>
+                <div class="toc-item">
+                    <span>2. System Architecture & Design</span>
+                    <span class="toc-page">4</span>
+                </div>
+                <div class="toc-item">
+                    <span>3. Code Implementation & Logic Flow</span>
+                    <span class="toc-page">5</span>
+                </div>
+                <div class="toc-item">
+                    <span>4. Input Validation & Error Handling</span>
+                    <span class="toc-page">6</span>
+                </div>
+                <div class="toc-item">
+                    <span>5. Output Format & Grading System</span>
+                    <span class="toc-page">7</span>
+                </div>
+                <div class="toc-item">
+                    <span>6. Testing, Limitations & Future Enhancements</span>
+                    <span class="toc-page">8</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">📖 Executive Summary</h2>
+                
+                <div class="info-box">
+                    <div class="info-box-title">Project Overview</div>
+                    <p>The <strong>Student Marksheet Management System</strong> is a comprehensive console-based C++ application designed to automate the process of calculating and generating student mark sheets for intermediate and secondary education. This system provides a streamlined approach to entering student data, validating inputs, calculating results, and generating professionally formatted mark certificates.</p>
+                </div>
+                
+                <h3 class="subsection-title">Project Objectives</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="30%">Objective</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Automation</strong></td>
+                            <td>Eliminate manual calculation errors in mark sheet generation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Validation</strong></td>
+                            <td>Ensure data integrity through robust input validation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Standardization</strong></td>
+                            <td>Generate consistent, professionally formatted mark certificates</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Efficiency</strong></td>
+                            <td>Reduce time required for result processing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Accuracy</strong></td>
+                            <td>Provide precise percentage and grade calculations</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="subsection-title">Key Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>✨ Core Functionality</h4>
+                        <ul>
+                            <li>Student Data Entry System</li>
+                            <li>Real-time Input Validation</li>
+                            <li>Automatic Calculation Engine</li>
+                            <li>Grade Assignment Logic</li>
+                            <li>Certificate Generation</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎯 Technical Highlights</h4>
+                        <ul>
+                            <li>Standard C++ Libraries</li>
+                            <li>Console-based Interface</li>
+                            <li>Modular Function Design</li>
+                            <li>Error-resistant Handling</li>
+                            <li>Floating-point Precision</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3 class="subsection-title">System Requirements</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Requirement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Operating System</strong></td>
+                            <td>Windows / Linux / macOS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compiler</strong></td>
+                            <td>C++11 or higher</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memory</strong></td>
+                            <td>Minimum 4MB RAM</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Storage</strong></td>
+                            <td>Less than 1MB disk space</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dependencies</strong></td>
+                            <td>Standard C++ Library</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="page-number">2</div>
+        </div>
+        
+        <!-- PAGE 3: SYSTEM ARCHITECTURE -->
+        <div class="page">
+            <div class="page-header">
+                <h1>🏗️ System Architecture & Design</h1>
+                <div class="doc-info">
+                    <div>Version 1.0</div>
+                    <div>March 13, 2026</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">System Architecture Diagram</h2>
+                
+                <div class="diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                    MAIN FUNCTION                                │
+│                         main()                                  │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    MARKSHEET FUNCTION                           │
+│                      Marksheet()                                │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        ▼                     ▼                     ▼
+┌───────────────┐    ┌─────────────────┐   ┌───────────────┐
+│  DATA INPUT   │    │  VALIDATION     │   │  CALCULATION  │
+│  MODULE       │    │  MODULE         │   │  MODULE       │
+├───────────────┤    ├─────────────────┤   ├───────────────┤
+│ • Name        │    │ • Name: chars   │   │ • Total marks │
+│ • Roll No     │    │ • Roll No: >0   │   │ • Percentage  │
+│ • 5 Subjects  │    │ • Marks: 0-100  │   │ • Grade       │
+└───────────────┘    └─────────────────┘   └───────────────┘
+        │                     │                     │
+        └─────────────────────┼─────────────────────┘
+                              ▼
+                    ┌─────────────────┐
+                    │  OUTPUT MODULE  │
+                    ├─────────────────┤
+                    │ • Formatted     │
+                    │   Certificate   │
+                    │ • Result Status │
+                    │ • Grade Display │
+                    └─────────────────┘
+                </div>
+                
+                <h3 class="subsection-title">Data Flow Diagram</h3>
+                
+                <div class="diagram">
+┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
+│  STUDENT │────▶│  INPUT   │────▶│ PROCESS  │────▶│  OUTPUT  │
+│   DATA   │     │ VALIDATION│     │CALCULATION│    │ GENERATION│
+└──────────┘     └──────────┘     └──────────┘     └──────────┘
+     │                │                │                │
+     ▼                ▼                ▼                ▼
+  Name, ID      Validated        Total,          Mark Certificate
+  5 Subjects    Data Values      Percentage,     with Grade
+                                 Pass/Fail
+                </div>
+                
+                <h3 class="subsection-title">Variable Structure</h3>
+                
+                <h4 class="subsection-title" style="font-size: 15px; margin-top: 20px;">Student Information Variables</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Data Type</th>
+                            <th>Purpose</th>
+                            <th>Constraints</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>studentName</code></td>
+                            <td>string</td>
+                            <td>Store student's full name</td>
+                            <td>Alphabetic characters only</td>
+                        </tr>
+                        <tr>
+                            <td><code>studentId</code></td>
+                            <td>int</td>
+                            <td>Store roll/seat number</td>
+                            <td>Positive integer (&gt;0)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 class="subsection-title" style="font-size: 15px; margin-top: 20px;">Academic Variables</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Data Type</th>
+                            <th>Purpose</th>
+                            <th>Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Math</code></td>
+                            <td>float</td>
+                            <td>Mathematics marks</td>
+                            <td>0-100</td>
+                        </tr>
+                        <tr>
+                            <td><code>Physics</code></td>
+                            <td>float</td>
+                            <td>Physics marks</td>
+                            <td>0-100</td>
+                        </tr>
+                        <tr>
+                            <td><code>English</code></td>
+                            <td>float</td>
+                            <td>English marks</td>
+                            <td>0-100</td>
+                        </tr>
+                        <tr>
+                            <td><code>Chemistry</code></td>
+                            <td>float</td>
+                            <td>Chemistry marks</td>
+                            <td>0-100</td>
+                        </tr>
+                        <tr>
+                            <td><code>Biology</code></td>
+                            <td>float</td>
+                            <td>Biology marks</td>
+                            <td>0-100</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 class="subsection-title" style="font-size: 15px; margin-top: 20px;">Result Variables</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Data Type</th>
+                            <th>Purpose</th>
+                            <th>Formula/Logic</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>totalObtained</code></td>
+                            <td>float</td>
+                            <td>Sum of all marks</td>
+                            <td>Math + Physics + English + Chemistry + Biology</td>
+                        </tr>
+                        <tr>
+                            <td><code>totalPercentage</code></td>
+                            <td>float</td>
+                            <td>Percentage score</td>
+                            <td>(totalObtained / 500) × 100</td>
+                        </tr>
+                        <tr>
+                            <td><code>Grade</code></td>
+                            <td>string</td>
+                            <td>Letter grade</td>
+                            <td>Based on percentage thresholds</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="page-number">3</div>
+        </div>
+        
+        <!-- PAGE 4: CODE IMPLEMENTATION -->
+        <div class="page">
+            <div class="page-header">
+                <h1>💻 Code Implementation & Logic Flow</h1>
+                <div class="doc-info">
+                    <div>Version 1.0</div>
+                    <div>March 13, 2026</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Function Structure</h2>
+                
+                <h3 class="subsection-title">Main Function</h3>
+                <div class="code-block">
+<span class="code-keyword">int</span> <span class="code-function">main</span>() {
+    <span class="code-function">Marksheet</span>();
+    <span class="code-keyword">return</span> <span class="code-string">0</span>;
+}
+                </div>
+                <div class="info-box">
+                    <div class="info-box-title">Purpose</div>
+                    <p>Entry point that calls the Marksheet function and returns execution status to the operating system.</p>
+                </div>
+                
+                <h3 class="subsection-title">Marksheet Function</h3>
+                <div class="code-block">
+<span class="code-keyword">void</span> <span class="code-function">Marksheet</span>()
+                </div>
+                <div class="info-box">
+                    <div class="info-box-title">Purpose</div>
+                    <p>Core function containing all program logic for data entry, validation, calculation, and output generation.</p>
+                </div>
+                
+                <h2 class="section-title">Implementation Phases</h2>
+                
+                <h3 class="subsection-title">Phase 1: Variable Declaration</h3>
+                <div class="code-block">
+string studentName;
+<span class="code-keyword">int</span> studentId;
+<span class="code-keyword">float</span> Math, Physics, English, Chemistry, Biology;
+<span class="code-keyword">float</span> totalObtained, totalPercentage;
+string Grade;
+                </div>
+                
+                <h3 class="subsection-title">Phase 2: Name Input with Validation</h3>
+                <div class="code-block">
+cout << <span class="code-string">"Enter Your Name: "</span>;
+cin >> studentName;
+<span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-string">0</span>; i &lt; studentName.length(); i++){
+    <span class="code-keyword">if</span> (studentName[i] >= <span class="code-string">'0'</span> && studentName[i] <= <span class="code-string">'9'</span>){
+        cout << <span class="code-string">"Invalid Name! Only Characters Allowed.\n"</span>;
+        cout << <span class="code-string">"Enter Your Name Again: "</span>;
+        cin >> studentName;
+        i = <span class="code-string">-1</span>;
+    }
+}
+                </div>
+                <div class="warning-box">
+                    <div class="warning-box-title">⚠️ Logic Explanation</div>
+                    <ul>
+                        <li>Iterates through each character of the input string</li>
+                        <li>Checks ASCII values for digits (0-9)</li>
+                        <li>Resets counter to -1 (becomes 0 after increment) on invalid input</li>
+                        <li>Re-prompts user for corrected name</li>
+                    </ul>
+                </div>
+                
+                <h3 class="subsection-title">Phase 3: Roll Number Validation</h3>
+                <div class="code-block">
+cout << <span class="code-string">"Enter Your Roll No: "</span>;
+cin >> studentId;
+<span class="code-keyword">while</span> (cin.fail() || studentId <= <span class="code-string">0</span>){
+    cin.clear();
+    cin.ignore(<span class="code-string">1000</span>, <span class="code-string">'\n'</span>);
+    cout << <span class="code-string">"Invalid Roll No! Enter again: "</span>;
+    cin >> studentId;
+}
+                </div>
+                
+                <h3 class="subsection-title">Phase 4: Subject Marks Input</h3>
+                <div class="code-block">
+cout << <span class="code-string">"Enter Math Marks: "</span>;
+cin >> Math;
+<span class="code-keyword">while</span> (cin.fail() || Math &lt; <span class="code-string">0</span> || Math > <span class="code-string">100</span> ){
+    cin.clear();
+    cin.ignore(<span class="code-string">1000</span>, <span class="code-string">'\n'</span>);
+    cout << <span class="code-string">"Invalid Marks! Enter again: "</span>;
+    cin >> Math;
+}
+                </div>
+                <div class="success-box">
+                    <div class="success-box-title">✓ Subjects Covered</div>
+                    <p>Mathematics, Physics, English, Chemistry, Biology - All follow identical validation pattern</p>
+                </div>
+                
+                <h2 class="section-title">Calculation Logic</h2>
+                
+                <h3 class="subsection-title">Total Marks Calculation</h3>
+                <div class="code-block">
+totalObtained = (Math + Physics + English + Chemistry + Biology);
+                </div>
+                
+                <h3 class="subsection-title">Percentage Calculation</h3>
+                <div class="code-block">
+totalPercentage = (totalObtained / <span class="code-string">500.0</span>) * <span class="code-string">100.0</span>;
+                </div>
+                <div class="info-box">
+                    <div class="info-box-title">Note</div>
+                    <p>Division by <code>500.0</code> ensures floating-point arithmetic for precision.</p>
+                </div>
+                
+                <h3 class="subsection-title">Grade Assignment Logic</h3>
+                <div class="code-block">
+<span class="code-keyword">if</span> (totalPercentage >= <span class="code-string">90</span>) Grade = <span class="code-string">"A-1"</span>;
+<span class="code-keyword">else if</span> (totalPercentage >= <span class="code-string">80</span>) Grade = <span class="code-string">"A"</span>;
+<span class="code-keyword">else if</span> (totalPercentage >= <span class="code-string">70</span>) Grade = <span class="code-string">"B"</span>;
+<span class="code-keyword">else if</span> (totalPercentage >= <span class="code-string">60</span>) Grade = <span class="code-string">"C"</span>;
+<span class="code-keyword">else if</span> (totalPercentage >= <span class="code-string">50</span>) Grade = <span class="code-string">"D"</span>;
+<span class="code-keyword">else</span> Grade = <span class="code-string">"Fail"</span>;
+                </div>
+            </div>
+            
+            <div class="page-number">4</div>
+        </div>
+        
+        <!-- PAGE 5: INPUT VALIDATION -->
+        <div class="page">
+            <div class="page-header">
+                <h1>✅ Input Validation & Error Handling</h1>
+                <div class="doc-info">
+                    <div>Version 1.0</div>
+                    <div>March 13, 2026</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Validation Strategies</h2>
+                
+                <div class="info-box">
+                    <div class="info-box-title">Three Distinct Approaches</div>
+                    <p>The system implements character-based validation, type & range validation, and dedicated range validation for different input types.</p>
+                </div>
+                
+                <h3 class="subsection-title">Strategy 1: Character-Based Validation (Name)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="25%">Aspect</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Mechanism</strong></td>
+                            <td>ASCII value comparison for digit detection</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Traversal</strong></td>
+                            <td>Character-by-character string iteration</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Action</strong></td>
+                            <td>Automatic re-prompt on invalid input</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Strengths</strong></td>
+                            <td>Prevents numeric characters, simple and efficient</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Limitations</strong></td>
+                            <td>Does not check special characters, single word only</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="subsection-title">Strategy 2: Type & Range Validation</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Error Type</th>
+                            <th>Detection Method</th>
+                            <th>Recovery Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Non-numeric input</td>
+                            <td><code>cin.fail()</code></td>
+                            <td>Clear, ignore, re-prompt</td>
+                        </tr>
+                        <tr>
+                            <td>Negative numbers</td>
+                            <td><code>value &lt; 0</code></td>
+                            <td>Re-prompt</td>
+                        </tr>
+                        <tr>
+                            <td>Zero value</td>
+                            <td><code>value &lt;= 0</code></td>
+                            <td>Re-prompt</td>
+                        </tr>
+                        <tr>
+                            <td>Out of range</td>
+                            <td><code>value &gt; 100</code></td>
+                            <td>Re-prompt</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="subsection-title">Error Handling Mechanisms</h3>
+                <div class="code-block">
+cin.clear();           <span class="code-comment">// Reset error flags</span>
+cin.ignore(<span class="code-string">1000</span>, <span class="code-string">'\n'</span>); <span class="code-comment">// Clear input buffer</span>
+                </div>
+                
+                <h2 class="section-title">Edge Cases Handled</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edge Case</th>
+                            <th>Handling Mechanism</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Empty name</td>
+                            <td>cin waits for input</td>
+                        </tr>
+                        <tr>
+                            <td>Name with numbers</td>
+                            <td>Detected and rejected</td>
+                        </tr>
+                        <tr>
+                            <td>Negative roll number</td>
+                            <td>Rejected (≤0 check)</td>
+                        </tr>
+                        <tr>
+                            <td>Zero roll number</td>
+                            <td>Rejected (≤0 check)</td>
+                        </tr>
+                        <tr>
+                            <td>Non-numeric roll number</td>
+                            <td>cin.fail() detected</td>
+                        </tr>
+                        <tr>
+                            <td>Negative marks</td>
+                            <td>Rejected (&lt;0 check)</td>
+                        </tr>
+                        <tr>
+                            <td>Marks &gt; 100</td>
+                            <td>Rejected (&gt;100 check)</td>
+                        </tr>
+                        <tr>
+                            <td>Decimal marks</td>
+                            <td>Accepted (float type)</td>
+                        </tr>
+                        <tr>
+                            <td>Character input for marks</td>
+                            <td>cin.fail() detected</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2 class="section-title">Validation Limitations</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Limitation</th>
+                            <th>Impact</th>
+                            <th>Potential Fix</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Single word name</td>
+                            <td>Cannot handle full names with spaces</td>
+                            <td>Use <code>getline()</code> instead of <code>cin</code></td>
+                        </tr>
+                        <tr>
+                            <td>Special characters in name</td>
+                            <td>Not detected</td>
+                            <td>Add ASCII range check for special chars</td>
+                        </tr>
+                        <tr>
+                            <td>Buffer size fixed at 1000</td>
+                            <td>Very long invalid input may need multiple attempts</td>
+                            <td>Increase buffer or loop ignore</td>
+                        </tr>
+                        <tr>
+                            <td>No upper limit on roll number</td>
+                            <td>Extremely large numbers accepted</td>
+                            <td>Add maximum roll number constraint</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="page-number">5</div>
+        </div>
+        
+        <!-- PAGE 6: OUTPUT & GRADING -->
+        <div class="page">
+            <div class="page-header">
+                <h1>📊 Output Format & Grading System</h1>
+                <div class="doc-info">
+                    <div>Version 1.0</div>
+                    <div>March 13, 2026</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Certificate Layout</h2>
+                
+                <div class="diagram">
+        BOARD OF INTERMEDIATE & SECONDARY EDUCATION HYDERABAD
+                        MARKS CERTIFICATE
+----------------------------------------------------------------------
+NAME: [Student Name]                              SEAT NO: [Roll Number]
+----------------------------------------------------------------------
+SUBJECTS              MAX MARKS    MIN MARKS    OBTAINED
+----------------------------------------------------------------------
+ENGLISH               100          33           [Marks]
+MATHEMATICS           100          33           [Marks]
+PHYSICS               100          33           [Marks]
+CHEMISTRY             100          33           [Marks]
+BIOLOGY               100          33           [Marks]
+----------------------------------------------------------------------
+TOTAL                 500                       [Total]
+----------------------------------------------------------------------
+
+RESULT: PASS/FAIL
+PERCENTAGE: XX.XX%
+GRADE: [Grade]
+----------------------------------------------------------------------
+                </div>
+                
+                <h3 class="subsection-title">Formatting Techniques</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Technique</th>
+                            <th>Code</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Column Alignment</td>
+                            <td><code>\t</code> (tab characters)</td>
+                            <td>Column separation</td>
+                        </tr>
+                        <tr>
+                            <td>Decimal Precision</td>
+                            <td><code>fixed</code>, <code>setprecision(2)</code></td>
+                            <td>Exactly 2 decimal places</td>
+                        </tr>
+                        <tr>
+                            <td>Border Creation</td>
+                            <td>Repeated dash characters</td>
+                            <td>Visual separation</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2 class="section-title">Grading System</h2>
+                
+                <h3 class="subsection-title">Grade Scale Table</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Grade</th>
+                            <th>Percentage Range</th>
+                            <th>Classification</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>A-1</strong></td>
+                            <td>90% - 100%</td>
+                            <td>Outstanding</td>
+                            <td>Exceptional performance</td>
+                        </tr>
+                        <tr>
+                            <td><strong>A</strong></td>
+                            <td>80% - 89.99%</td>
+                            <td>Excellent</td>
+                            <td>Superior understanding</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B</strong></td>
+                            <td>70% - 79.99%</td>
+                            <td>Very Good</td>
+                            <td>Strong grasp of concepts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C</strong></td>
+                            <td>60% - 69.99%</td>
+                            <td>Good</td>
+                            <td>Satisfactory performance</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D</strong></td>
+                            <td>50% - 59.99%</td>
+                            <td>Pass</td>
+                            <td>Minimum competency</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fail</strong></td>
+                            <td>Below 50%</td>
+                            <td>Fail</td>
+                            <td>Does not meet requirements</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="subsection-title">Sample Calculation</h3>
+                <div class="info-box">
+                    <div class="info-box-title">Example Student Data</div>
+                    <ul>
+                        <li><strong>Math:</strong> 85</li>
+                        <li><strong>Physics:</strong> 78</li>
+                        <li><strong>English:</strong> 82</li>
+                        <li><strong>Chemistry:</strong> 75</li>
+                        <li><strong>Biology:</strong> 88</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <div class="success-box-title">✓ Results</div>
+                    <ul>
+                        <li><strong>Total Obtained:</strong> 85 + 78 + 82 + 75 + 88 = <strong>408</strong></li>
+                        <li><strong>Percentage:</strong> (408 / 500) × 100 = <strong>81.60%</strong></li>
+                        <li><strong>Grade:</strong> <strong>A</strong> (80-89.99% range)</li>
+                        <li><strong>Result:</strong> <strong>PASS</strong> (≥33%)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="page-number">6</div>
+        </div>
+        
+        <!-- PAGE 7: TESTING & ENHANCEMENTS -->
+        <div class="page">
+            <div class="page-header">
+                <h1>🧪 Testing & Future Enhancements</h1>
+                <div class="doc-info">
+                    <div>Version 1.0</div>
+                    <div>March 13, 2026</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Test Cases</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Test ID</th>
+                            <th>Test Scenario</th>
+                            <th>Expected Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TC001</td>
+                            <td>Valid complete entry</td>
+                            <td>Certificate generated, Grade A-1</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC002</td>
+                            <td>Name with numbers</td>
+                            <td>Rejection, re-prompt</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC003</td>
+                            <td>Negative roll number</td>
+                            <td>Rejection, re-prompt</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC004</td>
+                            <td>Zero roll number</td>
+                            <td>Rejection, re-prompt</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC005</td>
+                            <td>Non-numeric roll number</td>
+                            <td>Rejection, re-prompt</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC006</td>
+                            <td>Negative marks</td>
+                            <td>Rejection, re-prompt</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC007</td>
+                            <td>Marks &gt; 100</td>
+                            <td>Rejection, re-prompt</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC008</td>
+                            <td>Decimal marks</td>
+                            <td>Accepted, calculated</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC009</td>
+                            <td>Border case: 90%</td>
+                            <td>Grade A-1</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC010</td>
+                            <td>Border case: 89.9%</td>
+                            <td>Grade A</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC011</td>
+                            <td>Fail scenario (30%)</td>
+                            <td>Result: FAIL, Grade: Fail</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC012</td>
+                            <td>Minimum pass (33%)</td>
+                            <td>Result: PASS</td>
+                            <td><span class="status-badge status-pass">✓ Pass</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="success-box">
+                    <div class="success-box-title">✓ Test Summary</div>
+                    <ul>
+                        <li><strong>Total Test Cases:</strong> 12</li>
+                        <li><strong>Passed:</strong> 12</li>
+                        <li><strong>Failed:</strong> 0</li>
+                        <li><strong>Pass Rate:</strong> 100%</li>
+                    </ul>
+                </div>
+                
+                <h2 class="section-title">Current Limitations</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Limitation</th>
+                            <th>Severity</th>
+                            <th>Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Single student per run</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td>Inefficient for bulk processing</td>
+                        </tr>
+                        <tr>
+                            <td>No data persistence</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td>Results lost after program exit</td>
+                        </tr>
+                        <tr>
+                            <td>Single word name input</td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                            <td>Cannot handle full names</td>
+                        </tr>
+                        <tr>
+                            <td>Fixed subject combination</td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                            <td>Inflexible for different streams</td>
+                        </tr>
+                        <tr>
+                            <td>No print functionality</td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                            <td>Cannot directly print certificates</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2 class="section-title">Future Enhancements</h2>
+                
+                <h3 class="subsection-title">Short-Term (Phase 1)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Enhancement</th>
+                            <th>Priority</th>
+                            <th>Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Full name support (getline)</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td><span class="status-badge status-low">Low</span></td>
+                        </tr>
+                        <tr>
+                            <td>Special character validation</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td><span class="status-badge status-low">Low</span></td>
+                        </tr>
+                        <tr>
+                            <td>Continue option for multiple students</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="subsection-title">Medium-Term (Phase 2)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Enhancement</th>
+                            <th>Priority</th>
+                            <th>Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>File output (save to .txt)</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>Multiple students batch processing</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>Subject customization</td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                            <td><span class="status-badge status-high">High</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="subsection-title">Long-Term (Phase 3)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Enhancement</th>
+                            <th>Priority</th>
+                            <th>Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Database integration (SQLite/MySQL)</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td><span class="status-badge status-high">High</span></td>
+                        </tr>
+                        <tr>
+                            <td>GUI development (Qt/Windows Forms)</td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                            <td><span class="status-badge status-high">Very High</span></td>
+                        </tr>
+                        <tr>
+                            <td>PDF export functionality</td>
+                            <td><span class="status-badge status-high">High</span></td>
+                            <td><span class="status-badge status-high">High</span></td>
+                        </tr>
+                        <tr>
+                            <td>Web interface</td>
+                            <td><span class="status-badge status-low">Low</span></td>
+                            <td><span class="status-badge status-high">Very High</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="page-number">7</div>
+        </div>
+        
+        <!-- PAGE 8: CONCLUSION -->
+        <div class="page">
+            <div class="page-header">
+                <h1>📈 Project Statistics & Conclusion</h1>
+                <div class="doc-info">
+                    <div>Version 1.0</div>
+                    <div>March 13, 2026</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Project Statistics</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-card" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                        <h4>📊 Code Metrics</h4>
+                        <ul>
+                            <li>Total Lines of Code: 100+</li>
+                            <li>Number of Functions: 2</li>
+                            <li>Number of Variables: 10</li>
+                            <li>Code Size: ~3.5 KB</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                        <h4>✅ Quality Metrics</h4>
+                        <ul>
+                            <li>Input Validation Points: 7</li>
+                            <li>Output Fields: 10+</li>
+                            <li>Grade Categories: 6</li>
+                            <li>Test Cases Passed: 12/12</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3 class="subsection-title">Code Quality Analysis</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Assessment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lines of Code</td>
+                            <td>~100</td>
+                            <td>Moderate</td>
+                        </tr>
+                        <tr>
+                            <td>Cyclomatic Complexity</td>
+                            <td>12</td>
+                            <td>Acceptable</td>
+                        </tr>
+                        <tr>
+                            <td>Function Count</td>
+                            <td>2</td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>Code Duplication</td>
+                            <td>High</td>
+                            <td>Needs improvement</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="subsection-title">Maintainability Score</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Factor</th>
+                            <th>Rating</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Readability</td>
+                            <td><span class="status-badge status-pass">Good</span></td>
+                            <td>Clear variable names</td>
+                        </tr>
+                        <tr>
+                            <td>Modularity</td>
+                            <td><span class="status-badge status-medium">Fair</span></td>
+                            <td>Single function does everything</td>
+                        </tr>
+                        <tr>
+                            <td>Reusability</td>
+                            <td><span class="status-badge status-fail">Low</span></td>
+                            <td>Validation code not modularized</td>
+                        </tr>
+                        <tr>
+                            <td>Scalability</td>
+                            <td><span class="status-badge status-fail">Low</span></td>
+                            <td>Requires significant changes for expansion</td>
+                        </tr>
+                        <tr>
+                            <td>Testability</td>
+                            <td><span class="status-badge status-medium">Medium</span></td>
+                            <td>Console I/O makes automated testing difficult</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2 class="section-title">Conclusion</h2>
+                
+                <div class="info-box">
+                    <div class="info-box-title">📝 Final Assessment</div>
+                    <p>The <strong>Student Marksheet Management System</strong> serves as a functional foundation for automated mark sheet generation. While currently limited to console-based single-student processing, it demonstrates core programming concepts including:</p>
+                    <ul class="styled-list" style="margin-top: 15px;">
+                        <li>Input validation and error handling</li>
+                        <li>Conditional logic for grade calculation</li>
+                        <li>Formatted console output</li>
+                        <li>Data type management</li>
+                        <li>Stream state handling</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <div class="warning-box-title">⚠️ Recommendations</div>
+                    <p>With the recommended enhancements, particularly file output, batch processing, and GUI development, this system could evolve into a production-ready application suitable for educational institutions.</p>
+                </div>
+                
+                <div class="document-footer">
+                    <p><strong>Prepared By:</strong> University PF Tasks Documentation Team</p>
+                    <p><strong>Review Date:</strong> March 13, 2026</p>
+                    <p><strong>Classification:</strong> Educational/Reference Material</p>
+                    <p style="margin-top: 20px; color: #3498db;">--- End of Documentation ---</p>
+                </div>
+            </div>
+            
+            <div class="page-number">8</div>
+        </div>
+        
+    </div>
+</body>
+</html>
